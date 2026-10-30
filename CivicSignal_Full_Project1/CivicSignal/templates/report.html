@@ -1,0 +1,173 @@
+```html
+{% extends "base.html" %}
+{% block title %}Report an Issue | CivicSignal{% endblock %}
+
+{% block content %}
+
+<section class="report-page">
+
+    <div class="report-heading">
+        <span class="eyebrow">CITIZEN PORTAL / NEW REPORT</span>
+        <h1>Report a Community Issue</h1>
+        <p>Help make your community better. Tell us about the issue and upload a photo if possible.</p>
+    </div>
+
+    <div class="report-card">
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="form-section-title">
+                <span class="section-number">01</span>
+                <div>
+                    <h2>Issue Details</h2>
+                    <p>Describe the problem you noticed.</p>
+                </div>
+            </div>
+
+            <div class="report-field">
+                <label for="citizen_name">Your Name <span class="optional">Optional</span></label>
+                <input id="citizen_name" name="citizen_name"
+                       placeholder="Enter your name">
+            </div>
+
+            <div class="report-field">
+                <label for="title">Issue Title <span class="optional">Optional</span></label>
+                <input id="title" name="title" maxlength="65"
+                       placeholder="e.g. Large pothole near the bus stop">
+            </div>
+
+            <div class="report-field">
+                <label for="description">Describe the Issue <span class="required">*</span></label>
+                <textarea id="description" name="description"
+                          required minlength="10" rows="4"
+                          placeholder="Explain what happened and how it affects people..."></textarea>
+            </div>
+
+            <div class="report-field">
+                <label for="category">Issue Category</label>
+                <select id="category" name="category">
+                    <option>Auto detect</option>
+                    {% for c in categories %}
+                    <option>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="report-field">
+                <label for="location">Location / Address <span class="required">*</span></label>
+                <input id="location" name="location" required
+                       placeholder="Enter street, area or nearby landmark">
+            </div>
+
+            <div class="form-section-title location-heading">
+                <span class="section-number">02</span>
+                <div>
+                    <h2>Location Coordinates</h2>
+                    <p>These fields are optional.</p>
+                </div>
+            </div>
+
+            <div class="report-grid">
+                <div class="report-field">
+                    <label for="latitude">Latitude <span class="optional">Optional</span></label>
+                    <input id="latitude" name="latitude" type="number"
+                           step="any" placeholder="12.9716">
+                </div>
+
+                <div class="report-field">
+                    <label for="longitude">Longitude <span class="optional">Optional</span></label>
+                    <input id="longitude" name="longitude" type="number"
+                           step="any" placeholder="77.5946">
+                </div>
+            </div>
+
+            <div class="form-section-title photo-heading">
+                <span class="section-number">03</span>
+                <div>
+                    <h2>Upload Issue Photo</h2>
+                    <p>A photo helps show the problem more clearly.</p>
+                </div>
+            </div>
+
+            <div class="photo-upload-area">
+                <div class="upload-icon">↑</div>
+                <label for="issue_photo" class="upload-label">
+                    Choose an issue photo
+                </label>
+                <p>JPG, JPEG, PNG, GIF or WEBP · Maximum 5 MB · Optional</p>
+
+                <input type="file" id="issue_photo" name="issue_photo"
+                       accept=".png,.jpg,.jpeg,.gif,.webp,image/png,image/jpeg,image/gif,image/webp">
+
+                <div id="photo-file-name" class="photo-file-name">
+                    No photo selected
+                </div>
+
+                <img id="photo-preview" alt="Selected issue photo preview"
+                     class="photo-preview">
+            </div>
+
+            <button class="btn btn-primary report-submit" type="submit">
+                Submit Complaint <span aria-hidden="true">→</span>
+            </button>
+
+            <p class="privacy-note">
+                Please do not include sensitive personal information in your report.
+            </p>
+
+        </form>
+
+    </div>
+
+    <aside class="report-help">
+        <div class="help-icon">✓</div>
+        <div>
+            <h3>What happens next?</h3>
+            <p>Your complaint receives a tracking ID. You can use it to follow progress while the relevant team reviews the issue.</p>
+        </div>
+    </aside>
+
+</section>
+
+<script>
+    const photoInput = document.getElementById("issue_photo");
+    const photoPreview = document.getElementById("photo-preview");
+    const photoFileName = document.getElementById("photo-file-name");
+
+    photoInput.addEventListener("change", function () {
+        const file = this.files[0];
+
+        photoPreview.removeAttribute("src");
+        photoPreview.style.display = "none";
+
+        if (!file) {
+            photoFileName.textContent = "No photo selected";
+            return;
+        }
+
+        const allowedTypes = [
+            "image/jpeg", "image/png", "image/gif", "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Please select a JPG, JPEG, PNG, GIF or WEBP image.");
+            this.value = "";
+            photoFileName.textContent = "No photo selected";
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            alert("Please choose an image smaller than 5 MB.");
+            this.value = "";
+            photoFileName.textContent = "No photo selected";
+            return;
+        }
+
+        photoFileName.textContent = file.name;
+        photoPreview.src = URL.createObjectURL(file);
+        photoPreview.style.display = "block";
+    });
+</script>
+
+{% endblock %}
+```
